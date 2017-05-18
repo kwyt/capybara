@@ -13,22 +13,6 @@ through an external gem.
 **Need help?** Ask on the mailing list (please do not open an issue on
 GitHub): http://groups.google.com/group/ruby-capybara
 
-**Note: Firefox 48+** If you're using Firefox with selenium-webdriver and want full functionality stay on either Firefox [45.0esr](https://ftp.mozilla.org/pub/firefox/releases/45.0esr/) or [47.0.1](https://ftp.mozilla.org/pub/firefox/releases/47.0.1/).
-If using selenium-webdriver 3.0+ this will require configuring your driver with the `marionette: false` option as shown below
-
-```ruby
-Capybara.register_driver :selenium do |app|
-  Capybara::Selenium::Driver.new(
-    app,
-    browser: :firefox,
-    desired_capabilities: Selenium::WebDriver::Remote::Capabilities.firefox(marionette: false)
-  )
-end
-```
-
-Using Firefox 48+ requires geckodriver and selenium-webdriver v3, the combo of which currently has multiple issues and is feature incomplete.
-You can read more about the missing features [here](https://github.com/teamcapybara/capybara/issues/1710).
-
 ## Table of contents
 
 - [Key benefits](#key-benefits)
@@ -390,11 +374,11 @@ See the section on adding and configuring drivers.
 
 ### <a name="selenium"></a>Selenium
 
-At the moment, Capybara supports [Selenium 2.0
-(Webdriver)](http://seleniumhq.org/docs/01_introducing_selenium.html#selenium-2-aka-selenium-webdriver),
-*not* Selenium RC. In order to use Selenium, you'll need to install the
+At the moment, Capybara supports [Selenium 3.x
+(Webdriver)](http://seleniumhq.org/docs/01_introducing_selenium.html#https://github.com/SeleniumHQ/selenium),
+In order to use Selenium, you'll need to install the
 `selenium-webdriver` gem, and add it to your Gemfile if you're using bundler.
-Provided Firefox is installed, everything is set up for you, and you should be
+Provided Chome and chromedriver are installed, everything is set up for you, and you should be
 able to start using Selenium right away.
 
 **Note**: drivers which run the server in a different thread may not share the
@@ -991,25 +975,25 @@ end
 
 Capybara makes it convenient to switch between different drivers. It also exposes
 an API to tweak those drivers with whatever settings you want, or to add your own
-drivers. This is how to override the selenium driver configuration to use chrome:
+drivers. This is how to override the selenium driver configuration to use firefox:
 
 ```ruby
 Capybara.register_driver :selenium do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+  Capybara::Selenium::Driver.new(app, :browser => :firefox)
 end
 ```
 
 However, it's also possible to give this configuration a different name.
 
 ```ruby
-Capybara.register_driver :selenium_chrome do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+Capybara.register_driver :selenium_firefox do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :firefox)
 end
 ```
 
 Then tests can switch between using different browsers effortlessly:
 ```ruby
-Capybara.current_driver = :selenium_chrome
+Capybara.current_driver = :selenium_firefox
 ```
 
 Whatever is returned from the block should conform to the API described by

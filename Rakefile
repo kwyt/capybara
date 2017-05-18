@@ -23,10 +23,10 @@ RSpec::Core::RakeTask.new(:spec_chrome) do |t|
   t.rspec_opts = %w[--color]
   # jruby buffers the progress formatter so travis doesn't see output often enough
   t.rspec_opts << '--format documentation' if RUBY_PLATFORM=='java'
-  t.pattern = './spec/*{_spec_chrome.rb}'
+  t.pattern = './spec{,/*/**}/*{_spec.rb,_spec_chrome.rb}'
 end
 
-task :spec => [:spec_marionette]
+task :spec => [:spec_chrome]
 
 YARD::Rake::YardocTask.new do |t|
   t.files   = ['lib/**/*.rb']
@@ -40,8 +40,6 @@ end
 task :travis do |t|
   if ENV['CAPYBARA_CHROME'] || ENV['CAPYBARA_CHROME_HEADLESS']
     Rake::Task[:spec_chrome].invoke
-  elsif ENV['CAPYBARA_LEGACY_FF']
-    Rake::Task[:spec_firefox].invoke
     Rake::Task[:cucumber].invoke
   else
     Rake::Task[:spec_marionette].invoke

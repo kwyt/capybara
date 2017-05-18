@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("minitest")
   s.add_development_dependency("rake")
   s.add_development_dependency("erubi")  # dependency specification needed by rbx
+  s.add_development_dependency("puma")
 
   if RUBY_ENGINE == 'rbx' then
     s.add_development_dependency("racc")

@@ -231,7 +231,7 @@ module Capybara
     # @param [Integer] port              The port to run the application on
     #
     def run_default_server(app, port)
-      servers[:webrick].call(app, port, server_host)
+      servers[:puma].call(app, port, server_host)
     end
 
     ##
@@ -439,7 +439,15 @@ Capybara.register_server :webrick do |app, port, host|
 end
 
 Capybara.register_server :puma do |app, port, host|
-  require 'rack/handler/puma'
+  begin
+    require 'rack/handler/puma'
+  rescue LoadError => e
+    if e.message =~ /puma/
+      raise LoadError, "You have specified puma as the web server for Capybara, please install the gem and add `gem 'puma'` to your Gemfile if you are using bundler."
+    else
+      raise e
+    end
+  end
   Rack::Handler::Puma.run(app, Host: host, Port: port, Threads: "0:4")
 end
 

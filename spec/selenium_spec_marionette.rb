@@ -4,11 +4,17 @@ require "selenium-webdriver"
 require 'shared_selenium_session'
 require 'rspec/shared_spec_matchers'
 
+Capybara.register_driver :selenium do |app|
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :firefox
+  )
+end
+
 Capybara.register_driver :selenium_marionette do |app|
   Capybara::Selenium::Driver.new(
     app,
-    browser: :firefox,
-    desired_capabilities: {marionette: true}
+    browser: :firefox
   )
 end
 

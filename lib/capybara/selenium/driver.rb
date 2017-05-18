@@ -4,7 +4,7 @@ require "uri"
 class Capybara::Selenium::Driver < Capybara::Driver::Base
 
   DEFAULT_OPTIONS = {
-    :browser => :firefox,
+    :browser => :chrome,
     clear_local_storage: false,
     clear_session_storage: false
   }
