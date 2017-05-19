@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Capybara::Server, focus_: true do
+RSpec.describe Capybara::Server do
 
   it "should spool up a rack server" do
     @app = proc { |env| [200, {}, ["Hello Server!"]]}
@@ -97,10 +97,13 @@ RSpec.describe Capybara::Server, focus_: true do
       expect(@server1.port).to eq(@server2.port)
     end
 
-    it "detects and waits for all reused server sessions pending requests" do
+    it "detects and waits for all reused server sessions pending requests",  :focus_ do
       done = 0
 
+      warn "test process id is #{Process.pid}"
+
       app = proc do |env|
+        warn "App process id is #{Process.pid}"
         request = Rack::Request.new(env)
         puts "in app"
         sleep request.params['wait_time'].to_f
@@ -115,8 +118,10 @@ RSpec.describe Capybara::Server, focus_: true do
       puts "done is #{done}"
       expect {
         start_request(server1, 0.5)
+        puts "server_requests = #{server1.send(:pending_requests?)}"
         puts "done1 is #{done}"
         start_request(server2, 3.0)
+        puts "server_requests = #{server2.send(:pending_requests?)}"
         puts "done2 is #{done}"
         server1.wait_for_pending_requests
         puts "done3 is #{done}"
