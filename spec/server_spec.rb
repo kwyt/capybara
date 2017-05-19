@@ -117,7 +117,7 @@ RSpec.describe Capybara::Server do
 
       puts "done is #{done}"
       expect {
-        start_request(server1, 0.5)
+        start_request(server1, 1)
         puts "server_requests = #{server1.send(:pending_requests?)}"
         puts "done1 is #{done}"
         start_request(server2, 3.0)

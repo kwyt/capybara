@@ -448,7 +448,7 @@ Capybara.register_server :puma do |app, port, host|
       raise e
     end
   end
-  Rack::Handler::Puma.run(app, Host: host, Port: port, Threads: "0:4")
+  Rack::Handler::Puma.run(app, Host: host, Port: port, Threads: "0:4", workers: 0)
 end
 
 Capybara.configure do |config|
