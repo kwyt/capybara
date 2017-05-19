@@ -98,24 +98,24 @@ RSpec.describe Capybara::Server do
     end
 
     it "detects and waits for all reused server sessions pending requests" do
-      done = false
+      done = 0
 
       app = proc do |env|
         request = Rack::Request.new(env)
         sleep request.params['wait_time'].to_f
-        done = true
+        done += 1
         [200, {}, ["Hello Server!"]]
       end
 
       server1 = Capybara::Server.new(app).boot
       server2 = Capybara::Server.new(app).boot
 
-      start_request(server1, 0.5)
-      start_request(server2, 1.0)
 
       expect {
+        start_request(server1, 0.5)
+        start_request(server2, 3.0)
         server1.wait_for_pending_requests
-      }.to change{done}.from(false).to(true)
+      }.to change{done}.from(0).to(2)
       expect(server2.send(:pending_requests?)).to eq(false)
     end
 
@@ -147,25 +147,27 @@ RSpec.describe Capybara::Server do
     end
 
     it "detects and waits for only one sessions pending requests" do
-      done = false
+      done = 0
 
       app = proc do |env|
         request = Rack::Request.new(env)
         sleep request.params['wait_time'].to_f
-        done = true
+        done += 1
         [200, {}, ["Hello Server!"]]
       end
 
       server1 = Capybara::Server.new(app).boot
       server2 = Capybara::Server.new(app).boot
 
-      start_request(server1, 0.5)
-      start_request(server2, 1.0)
 
       expect {
+        start_request(server1, 0.5)
+        start_request(server2, 3.0)
         server1.wait_for_pending_requests
-      }.to change{done}.from(false).to(true)
+      }.to change{done}.from(0).to(1)
       expect(server2.send(:pending_requests?)).to eq(true)
+      server2.wait_for_pending_requests
+      expect(done).to eq 2
     end
 
   end
