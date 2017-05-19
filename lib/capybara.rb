@@ -448,8 +448,6 @@ Capybara.register_server :puma do |app, port, host|
       raise e
     end
   end
-  require 'byebug'
-  byebug
   Rack::Handler::Puma.run(app, Host: host, Port: port, Threads: "0:4", workers: 0)
 end
 

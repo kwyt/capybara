@@ -212,7 +212,8 @@ RSpec.describe Capybara::Server do
     # Start request, but don't wait for it to finish
     socket = TCPSocket.new(server.host, server.port)
     socket.write "GET /?wait_time=#{wait_time.to_s} HTTP/1.0\r\n\r\n"
+    sleep 0.1
     socket.close
-    sleep 0.5
+    sleep 0.1
   end
 end
