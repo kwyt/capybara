@@ -109,7 +109,7 @@ RSpec.describe Capybara::Server do
         sleep request.params['wait_time'].to_f
         puts "increasing done"
         done += 1
-        [200, {}, ["Hello Server!"]]
+        [200, {}, ["Hello Server! #{Process.pid}"]]
       end
 
       server1 = Capybara::Server.new(app).boot
@@ -165,14 +165,14 @@ RSpec.describe Capybara::Server do
         request = Rack::Request.new(env)
         sleep request.params['wait_time'].to_f
         done += 1
-        [200, {}, ["Hello Server!"]]
+        [200, {}, ["Hello Server! #{Process.pid}"]]
       end
 
       server1 = Capybara::Server.new(app).boot
       server2 = Capybara::Server.new(app).boot
 
       expect {
-        start_request(server1, 0.5)
+        start_request(server1, 1)
         start_request(server2, 3.0)
         server1.wait_for_pending_requests
       }.to change{done}.from(0).to(1)
@@ -213,6 +213,6 @@ RSpec.describe Capybara::Server do
     socket = TCPSocket.new(server.host, server.port)
     socket.write "GET /?wait_time=#{wait_time.to_s} HTTP/1.0\r\n\r\n"
     socket.close
-    sleep 0.1
+    sleep 0.5
   end
 end
