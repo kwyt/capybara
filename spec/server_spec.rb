@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Capybara::Server do
+RSpec.describe Capybara::Server, focus_: true do
 
   it "should spool up a rack server" do
     @app = proc { |env| [200, {}, ["Hello Server!"]]}
@@ -102,7 +102,9 @@ RSpec.describe Capybara::Server do
 
       app = proc do |env|
         request = Rack::Request.new(env)
+        puts "in app"
         sleep request.params['wait_time'].to_f
+        puts "increasing done"
         done += 1
         [200, {}, ["Hello Server!"]]
       end
@@ -110,12 +112,16 @@ RSpec.describe Capybara::Server do
       server1 = Capybara::Server.new(app).boot
       server2 = Capybara::Server.new(app).boot
 
-
+      puts "done is #{done}"
       expect {
         start_request(server1, 0.5)
+        puts "done1 is #{done}"
         start_request(server2, 3.0)
+        puts "done2 is #{done}"
         server1.wait_for_pending_requests
+        puts "done3 is #{done}"
         sleep 5
+        puts "done4 is #{done}"
       }.to change{done}.from(0).to(2)
       expect(server2.send(:pending_requests?)).to eq(false)
     end
@@ -159,7 +165,6 @@ RSpec.describe Capybara::Server do
 
       server1 = Capybara::Server.new(app).boot
       server2 = Capybara::Server.new(app).boot
-
 
       expect {
         start_request(server1, 0.5)
